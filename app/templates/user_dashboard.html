@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Blood Bank - Save Lives with Blood Donation</title>
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet"
+            href="{{ url_for('static', filename='home.css') }}">
+
+        <style>
+          table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: 40px auto;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #b30000;
+            color: white;
+        }
+        h2 {
+            text-align: center;
+            color: #b30000;
+        }
+        
+        </style>
+    </head>
+    <header>
+        <nav>
+            <div class="logo">
+                🩸 BloodBank
+            </div>
+            <ul>
+                <p>Welcome,{{ username }}!</p>
+                <a class="btn-login" href="{{ url_for('logout') }}">Logout</a>
+             
+
+            </ul>
+        </nav>
+    </header>
+    <body>
+        <!-- success.html -->
+
+        <h2>Blood Stock Available</h2>
+        <!-- {{stock}} -->
+
+        <table>
+            <tr>
+                <th>Blood Group</th>
+                <th>Units Available</th>
+            </tr>
+
+            {% for item in stock %}
+            <tr>
+                <td>{{ item.blood_group }}</td>
+                <td>{{ item.units_available }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if stock|length == 0 %}
+            <tr>
+                <td colspan="2">No stock available</td>
+            </tr>
+            {% endif %} 
+        </table>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-bottom"
+                style="padding-top: 0px;margin-top: 0px;">
+                <p>&copy; 2025 BloodBank. All rights reserved. | Save a life
+                    today, be a hero tomorrow.</p>
+            </div>
+        </footer>
+    </body>
+</html>

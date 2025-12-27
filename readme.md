@@ -50,9 +50,11 @@ BloodBank/
 ├── app/
 │   ├── main.py
 │   │
-│   ├── Logic/
+|   |── Database/
 │   │   ├── connect.py
-│   │   ├── auth.py
+│   │   ├── creation_tables.py
+│   │
+│   ├── Logic/
 │   │   └── common.py
 │   │
 │   ├── templates/
@@ -62,9 +64,8 @@ BloodBank/
 │   │   └── agent_dashboard.html
 │   │
 │   └── static/
-│       └── css/
-│           └── style.css
-│
+│       └── home.css
+│       └── style.css
 ├── .env
 ├── requirements.txt
 └── README.md

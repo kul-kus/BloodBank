@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Blood Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            border-radius: 10px;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            font-weight: 500;
+        }
+        nav a:hover {
+            opacity: 0.8;
+        }
+        .user-info {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        .btn-logout {
+            background-color: white;
+            color: #c41e3a;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            text-decoration: none;
+        }
+        .btn-logout:hover {
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .admin-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .admin-header h1 {
+            color: #c41e3a;
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .admin-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #c41e3a 0%, #a01830 100%);
+            color: white;
+            padding: 25px;
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .card-content {
+            padding: 30px;
+        }
+        .card-description {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .action-btn.create {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+        }
+        .action-btn.create:hover {
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        .action-btn.update {
+            background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+            color: #333;
+        }
+        .action-btn.update:hover {
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+        .action-btn.delete {
+            background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+        }
+        .action-btn.delete:hover {
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+        }
+        .stats-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .stats-title {
+            font-size: 22px;
+            color: #c41e3a;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        .feature-list li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-list li:before {
+            content: '✓';
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 10px;
+        }
+        .modal-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #c41e3a;
+        }
+        .modal-content.active {
+            display: block;
+        }
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .admin-header h1 {
+                font-size: 24px;
+            }
+            nav ul {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <nav>
+            <div class="logo">
+                🩸 BloodBank Admin
+            </div>
+            <ul>
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li>
+                    <div class="user-info">
+                        <span>🔑 Agent: {{ username }}</span>
+                    </div>
+                </li>
+                <li><a href="{{ url_for('logout') }}" class="btn-logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header">
+            <h1>
+                <span>⚙️</span>
+                Admin Control Panel
+            </h1>
+            <p>Manage users and blood stock inventory with ease</p>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="stats-title">📊 Quick Statistics</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <div class="stat-number" id="total-users">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Blood Groups</h3>
+                    <div class="stat-number" id="total-groups">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Stock Units</h3>
+                    <div class="stat-number" id="total-units">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Dashboard -->
+        <div class="dashboard-grid">
+            <!-- Users Management Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    👥 User Management
+                </div>
+                <div class="card-content">
+                    <p class="card-description">
+                        Manage all users in the system. Create new user accounts, update existing user information, 
+                        or remove inactive users from the database.
+                    </p>
+<!--                     
+                    <div class="feature-list">
+                        <li>Create new user accounts</li>
+                        <li>Update user information</li>
+                        <li>Delete user accounts</li>
+                        <li>View user activity logs</li>
+                        <li>Reset user passwords</li>
+                    </div> -->
+
+                    <div class="action-buttons" style="margin-top: 25px;">
+                        <a href="/user/create" class="action-btn create">
+                            ➕ Create User
+                        </a>
+                        <a href="/user/udpate" class="action-btn update">
+                            ✏️ Update User
+                        </a>
+                        <a href="/user/delete" class="action-btn delete">
+                            🗑️ Delete User
+                        </a>
+                        <a href="/user/view" class="action-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            📋 View All
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Management Card -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    🩸 Stock Management
+                </div>
+                <div class="card-content">
+                    <p class="card-description">
+                        Manage blood stock inventory across all blood groups. Add new stock entries, update quantities, 
+                        or remove expired/damaged stock from inventory.
+                    </p>
+                    
+                    <!-- <div class="feature-list">
+                        <li>Create new stock entries</li>
+                        <li>Update stock quantities</li>
+                        <li>Delete expired stock</li>
+                        <li>Monitor stock levels</li>
+                        <li>Generate stock reports</li>
+                    </div> -->
+
+                    <div class="action-buttons" style="margin-top: 25px;">
+                        <a href="#" class="action-btn create">
+                            ➕ Add Stock
+                        </a>
+                        <a href="#" class="action-btn update">
+                            ✏️ Update Stock
+                        </a>
+                        <a href="#" class="action-btn delete">
+                            🗑️ Remove Stock
+                        </a>
+                        <a href="#" class="action-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            📊 View Stock
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 BloodBank Management System | Admin Control Panel</p>
+    </footer>
+
+    <script>
+        // Initialize statistics (these would be populated with actual data from backend)
+        function initializeStats() {
+            // These values should come from your backend
+            document.getElementById('total-users').textContent = '--';
+            document.getElementById('total-groups').textContent = '8';
+            document.getElementById('total-units').textContent = '--';
+        }
+
+        // Check if route exists (for template)
+        function url_for_exists(endpoint) {
+            try {
+                return false
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', initializeStats);
+    </script>
+</body>
+</html>
